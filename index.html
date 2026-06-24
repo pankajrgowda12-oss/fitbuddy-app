@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitBuddy | Gym & Fitness Assistant</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js"></script>
+
+  <style>
+    body {
+      background: #0e2212;
+      color: #eaeaea;
+      font-family: Arial, sans-serif;
+    }
+    .grad {
+      background: linear-gradient(90deg, #22d3ee, #a3e635);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card {
+      background: #1a2236;
+      border: 1px solid #2a3550;
+      border-radius: 12px;
+    }
+    .btn {
+      background: #22d3ee;
+      color: #0e1422;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: #67e8f9;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    const e = React.createElement;
+
+    const API = "http://localhost:8000";
+
+    const MODULES = [
+      { i: "🏋️", t: "Workout Planner",    d: "AI builds a weekly workout plan for you." },
+      { i: "🥗", t: "Diet Recommender",   d: "Meal plans based on your goal & body stats." },
+      { i: "📊", t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
+      { i: "💬", t: "Chat Assistant",     d: "24x7 fitness chatbot for quick help." },
+      { i: "📷", t: "Pose Detection",     d: "Form check using camera (demo only)." },
+      { i: "📍", t: "Gym Finder",         d: "Suggests nearby gyms." },
+    ];
+
+    const WEEK = [
+      { day: "Mon", count: 320 },
+      { day: "Tue", count: 410 },
+      { day: "Wed", count: 380 },
+      { day: "Thu", count: 520 },
+      { day: "Fri", count: 470 },
+      { day: "Sat", count: 610 },
+      { day: "Sun", count: 500 },
+    ];
+
+    const PROGRESS = [
+      { w: "W1", v: 60 },
+      { w: "W2", v: 66 },
+      { w: "W3", v: 70 },
+      { w: "W4", v: 75 },
+      { w: "W5", v: 82 },
+      { w: "W6", v: 88 },
+    ];
+
+    const { ResponsiveContainer, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } = Recharts;
+
+    function ChatBox() {
+      const [msgs, setMsgs] = React.useState([
+        { who: "bot", text: "Hi! I am FitBuddy. Ask me anything about workout or diet." }
+      ]);
+      const [input, setInput] = React.useState("");
+      const [loading, setLoading] = React.useState(false);
+      const endRef = React.useRef(null);
+
+      React.useEffect(() => {
+        if (endRef.current) endRef.current.scrollIntoView({ behavior: "smooth" });
+      }, [msgs]);
+
+      async function send(txt) {
+        const q = (txt || input).trim();
+        if (!q || loading) return;
+
+        const next = msgs.concat([{ who: "user", text: q }]);
+        setMsgs(next);
+        setInput("");
+        setLoading(true);
+
+        try {
+          const res = await fetch(API + "/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              messages: next.map(m => ({
+                role: m.who === "user" ? "user" : "assistant",
+                content: m.text
+              }))
+            })
+          });
+
+          const reader = res.body.getReader();
+          const dec = new TextDecoder();
+          let acc = "";
+
+          setMsgs(l => l.concat([{ who: "bot", text: "" }]));
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            acc += dec.decode(value, { stream: true });
+            setMsgs(l => {
+              const copy = [...l];
+              copy[copy.length - 1] = { who: "bot", text: acc };
+              return copy;
+            });
+          }
+        } catch (err) {
+          setMsgs(l => l.concat([
+            { who: "bot", text: "Could not reach server. Make sure backend.py is running." }
+          ]));
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      return e("div", { className: "card p-4 max-w-2xl mx-auto" },
+        e("div", { className: "h-72 overflow-y-auto p-2 space-y-2" },
+          msgs.map((m, i) => 
+            e("div", { key: i, className: "flex " + (m.who === "user" ? "justify-end" : "justify-start") },
+              e("div", { className: "px-3 py-2 rounded-lg max-w-[75%] " + (m.who === "user" ? "bg-cyan-400 text-slate-900" : "bg-slate-700") },
+                m.text || "..."
+              )
+            )
+          ),
+          e("div", { ref: endRef })
+        ),
+        e("div", { className: "flex gap-2 mt-3" },
+          e("input", {
+            className: "flex-1 px-3 py-2 bg-slate-800 rounded-md outline-none text-slate-100",
+            placeholder: "Type your question...",
+            value: input,
+            onChange: e => setInput(e.target.value),
+            onKeyDown: ev => { if (ev.key === "Enter") send(); }
+          }),
+          e("button", { onClick: () => send(), disabled: loading, className: "btn" }, loading ? "..." : "Send")
+        ),
+        e("div", { className: "flex flex-wrap gap-2 mt-3" },
+          ["Beginner workout plan", "High protein breakfast", "How to fix bad posture"].map(s =>
+            e("button", { key: s, onClick: () => send(s), className: "text-xs px-3 py-1 bg-slate-700 rounded-full cursor-pointer text-slate-200 hover:bg-slate-600" }, s)
+          )
+        )
+      );
+    }
+
+    function App() {
+      return e("div", null,
+        e("header", { className: "flex justify-between items-center px-6 py-4" },
+          e("div", { className: "text-2xl font-bold grad" }, "FitBuddy"),
+          e("nav", { className: "space-x-5 text-sm text-slate-300" },
+            e("a", { href: "#mods", className: "hover:text-white" }, "Modules"),
+            e("a", { href: "#admin", className: "hover:text-white" }, "Dashboard"),
+            e("a", { href: "#chat", className: "hover:text-white" }, "Chat")
+          )
+        ),
+        e("section", { className: "text-center px-4 py-16" },
+          e("h1", { className: "text-5xl font-bold leading-snug" }, 
+            "Your Personal ", e("span", { className: "grad" }, "AI Gym"), e("br"), "and Fitness Assistant"
+          ),
+          e("p", { className: "mt-4 text-slate-400 max-w-xl mx-auto" }, 
+            "A simple website that uses AI to help you plan workouts, meals and stay on track with your fitness goals."
+          ),
+          e("div", { className: "mt-6" }, e("a", { href: "#chat", className: "btn" }, "Try the Chatbot"))
+        ),
+        e("section", { id: "mods", className: "px-6 py-14 max-w-6xl mx-auto" },
+          e("h2", { className: "text-2xl font-bold mb-6" }, "Modules"),
+          e("div", { className: "grid md:grid-cols-3 gap-4" },
+            MODULES.map(m => 
+              e("div", { key: m.t} , 
+                e("div", { className: "card p-5" },
+                  e("div", { className: "text-3xl" }, m.i),
+                  e("div", { className: "mt-2 font-semibold" }, m.t),
+                  e("div", { className: "text-sm text-slate-400 mt-1" }, m.d)
+                )
+              )
+            )
+          )
+        ),
+        e("section", { id: "admin", className: "px-6 py-14 max-w-6xl mx-auto" },
+          e("h2", { className: "text-2xl font-bold mb-6" }, "Admin Dashboard"),
+          e("div", { className: "grid md:grid-cols-4 gap-4 mb-6" },
+            [
+              ["Active Users", "12,450"],
+              ["Workouts Today", "3,210"],
+              ["Avg Session", "42 min"],
+              ["Retention", "71%"]
+            ].map(k => 
+              e("div", { key: k[0], className: "card p-4" },
+                e("div", { className: "text-xs text-slate-400" }, k[0]),
+                e("div", { className: "text-xl font-bold mt-1" }, k[1])
+              )
+            )
+          ),
+          e("div", { className: "grid md:grid-cols-2 gap-4" },
+            e("div", { className: "card p-4", style: { height: "260px" } },
+              e("div", { className: "mb-2 font-semibold" }, "Workouts this week"),
+              e(ResponsiveContainer, { width: "100%", height: "90%" },
+                e(BarChart, { data: WEEK },
+                  e(CartesianGrid, { stroke: "#33415555" }),
+                  e(XAxis, { dataKey: "day", stroke: "#94a3b8" }),
+                  e(YAxis, { stroke: "#94a3b8" }),
+                  e(Tooltip),
+                  e(Bar, { dataKey: "count", fill: "#22d3ee" })
+                )
+              )
+            ),
+            e("div", { className: "card p-4", style: { height: "260px" } },
+              e("div", { className: "mb-2 font-semibold" }, "User Progress"),
+              e(ResponsiveContainer, { width: "100%", height: "90%" },
+                e(AreaChart, { data: PROGRESS },
+                  e(CartesianGrid, { stroke: "#33415555" }),
+                  e(XAxis, { dataKey: "w", stroke: "#94a3b8" }),
+                  e(YAxis, { stroke: "#94a3b8" }),
+                  e(Tooltip),
+                  e(Area, { dataKey: "v", stroke: "#a3e635", fill: "#a3e63555" })
+                )
+              )
+            )
+          )
+        ),
+        e("section", { id: "chat", className: "px-6 py-14" },
+          e("h2", { className: "text-2xl font-bold mb-2 text-center" }, "Chat with FitBuddy"),
+          e("p", { className: "text-center text-slate-400 mb-6" }, "Powered by the Python backend (FastAPI + OpenAI)."),
+          e(ChatBox)
+        ),
+        e("footer", { className: "text-center text-slate-500 text-sm py-8 border-t border-slate-700" }, 
+          "Mini Project — AI Gym and Fitness Assistant"
+        )
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+  </script>
+</body>
+</html>
