@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitBuddy</title>
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- React and ReactDOM from CDN -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <style>
@@ -33,17 +31,17 @@
         const API = "https://fitbuddy-backend-qgug.onrender.com";
 
         const MODULES = [
-            { i: "🏋️‍♂️", t: "Workout Planner", d: "AI builds a weekly workout plan for you." },
-            { i: "🥗", t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
-            { i: "📊", t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
-            { i: "💬", t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
-            { i: "📷", t: "Pose Detection", d: "Form check using camera (demo only)." },
-            { i: "📍", t: "Gym Finder", d: "Suggests nearby gyms." },
+            { i: "", t: "Workout Planner", d: "Builds a weekly workout plan for you." },
+            { i: "", t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
+            { i: "", t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
+            { i: "", t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
+            { i: "", t: "Pose Detection", d: "Form check using camera (demo only)." },
+            { i: "", t: "Gym Finder", d: "Suggests nearby gyms." },
         ];
 
         function ChatBox() {
             const [msgs, setMsgs] = React.useState([
-                { who: "bot", text: "Hi! I am FitBuddy. Ask me anything about workout or diet." }
+                { who: "bot", text: "Welcome to FitBuddy. Ask any question regarding your workout or diet routine below." }
             ]);
             const [input, setInput] = React.useState("");
             const [loading, setLoading] = React.useState(false);
@@ -87,14 +85,30 @@
                             return copy;
                         });
                     }
-               } catch (err) {
-                    let fallbackText = "Here is your customized plan!\n\n🏋️‍♂️ **Workout Plan:**\n- Monday: Push Day (Chest, Shoulders, Triceps)\n- Wednesday: Pull Day (Back, Biceps)\n- Friday: Leg Day (Squats, Lunges, Calves)\n\n🥗 **Diet Tip:** Focus on lean proteins (chicken, fish, tofu) and complex carbohydrates to fuel your fitness goals.";
-                    
+                } catch (err) {
                     const lowerInput = messageToSend.toLowerCase();
-                    if (lowerInput.includes("recipe") || lowerInput.includes("food") || lowerInput.includes("diet") || lowerInput.includes("breakfast") || lowerInput.includes("protein")) {
-                        fallbackText = "Here is a high-protein recipe for your goals!\n\n🍳 **High-Protein Scramble & Oats:**\n- **Ingredients:** 3 egg whites, 1 whole egg, 50g oats, 1 scoop protein powder, berries.\n- **Instructions:** Scramble the eggs in a pan with a splash of olive oil. Mix the protein powder into warm oatmeal and top with fresh berries.\n\n💪 **Macros:** ~45g Protein / 40g Carbs / 12g Fat.";
-                    } else if (lowerInput.includes("posture") || lowerInput.includes("fix")) {
-                        fallbackText = "Here is how to fix bad posture:\n\n🧘‍♂️ **Posture Correction Routine:**\n- **Chin Tucks:** 3 sets of 10 reps (strengthens neck muscles).\n- **Wall Angels:** 3 sets of 12 reps (opens up tight shoulders and chest).\n- **Planks:** Hold for 45 seconds to strengthen core stability.";
+                    let fallbackText = "";
+
+                    const fitnessKeywords = [
+                        "workout", "plan", "diet", "recipe", "food", "protein", "gym", "exercise", 
+                        "posture", "fix", "body", "muscle", "gain", "lose", "weight", "fat", "calories",
+                        "breakfast", "lunch", "dinner", "healthy", "routine", "hour", "time", "train", "suggest"
+                    ];
+
+                    const isFitnessRelated = fitnessKeywords.some(keyword => lowerInput.includes(keyword));
+
+                    if (isFitnessRelated) {
+                        if (lowerInput.includes("recipe") || lowerInput.includes("food") || lowerInput.includes("diet") || lowerInput.includes("breakfast") || lowerInput.includes("protein")) {
+                            fallbackText = "High-Protein Recipe Selection:\n\nIngredients:\n- 3 egg whites, 1 whole egg\n- 50g oats\n- 1 scoop protein powder\n- Fresh berries\n\nInstructions:\n1. Scramble the eggs in a pan with a splash of olive oil.\n2. Mix the protein powder into warm oatmeal and top with berries.\n\nMacros: Approximately 45g Protein / 40g Carbs / 12g Fat.";
+                        } else if (lowerInput.includes("posture") || lowerInput.includes("fix")) {
+                            fallbackText = "Posture Correction Routine:\n\n- Chin Tucks: 3 sets of 10 reps to strengthen neck muscles.\n- Wall Angels: 3 sets of 12 reps to open tight shoulders and chest.\n- Planks: Hold for 45 seconds to strengthen core stability.";
+                        } else if (lowerInput.includes("hour") || lowerInput.includes("time") || lowerInput.includes("long")) {
+                            fallbackText = "Training Optimization Note: Training sessions exceeding 90 minutes can elevate cortisol levels and limit overall muscle recovery. It is recommended to keep weight training sessions structured between 45 to 90 minutes for optimal intensity and performance outcomes.";
+                        } else {
+                            fallbackText = "Custom Fitness Strategy:\n\nWeekly Workout Layout:\n- Monday: Push Selection (Chest, Shoulders, Triceps)\n- Wednesday: Pull Selection (Back, Biceps)\n- Friday: Lower Body Selection (Squats, Lunges, Calves)\n\nNutritional Focus: Prioritize lean proteins such as chicken, fish, or tofu alongside complex carbohydrate sources to appropriately fuel training goals.";
+                        }
+                    } else {
+                        fallbackText = "This platform is dedicated exclusively to fitness, workout programming, and nutritional guidance. Please submit a query related to these operational domains.";
                     }
 
                     setMsgs(l => l.concat([
@@ -106,8 +120,8 @@
             }
 
             return e("div", { className: "card p-4 max-w-2xl mx-auto bg-slate-900 text-white rounded-xl shadow-lg mt-10" },
-                e("h2", { className: "text-2xl font-bold text-center mb-4" }, "Chat with FitBuddy"),
-                e("p", { className: "text-center text-slate-400 text-sm mb-6" }, "Powered by the Python backend (FastAPI + OpenAI)."),
+                e("h2", { className: "text-2xl font-bold text-center mb-4" }, "FitBuddy Support Chat"),
+                e("p", { className: "text-center text-slate-400 text-sm mb-6" }, "Application Interface Client Terminal"),
                 e("div", { className: "h-72 overflow-y-auto p-2 space-y-2 border border-slate-700 rounded-lg mb-4" },
                     msgs.map((m, i) =>
                         e("div", { key: i, className: "flex " + (m.who === "user" ? "justify-end" : "justify-start") },
@@ -122,7 +136,7 @@
                     e("input", {
                         type: "text",
                         className: "flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400",
-                        placeholder: "Type your question...",
+                        placeholder: "Enter question...",
                         value: input,
                         onChange: (ae) => setInput(ae.target.value),
                         onKeyDown: (ae) => ae.key === "Enter" && send()
@@ -156,13 +170,13 @@
                 ),
                 e("section", { className: "text-center px-4 py-16" },
                     e("h1", { className: "text-5xl font-extrabold leading-snug mb-4" },
-                        "Your Personal ", e("span", { className: "bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent" }, "AI Gym"), " and Fitness Assistant"
+                        "Personal Training and Fitness Systems"
                     ),
                     e("p", { className: "mt-4 text-slate-400 max-w-xl mx-auto" },
-                        "A simple website that uses AI to help you plan workouts, meals and stay on track with your fitness goals."
+                        "Structured resource program to help organize workouts, coordinate meal planning, and track operational metrics."
                     ),
                     e("div", { className: "mt-6" },
-                        e("a", { href: "#chat", className: "btn bg-cyan-400 text-slate-900 hover:bg-cyan-300" }, "Try the Chatbot")
+                        e("a", { href: "#chat", className: "btn bg-cyan-400 text-slate-900 hover:bg-cyan-300" }, "Open Chat Console")
                     )
                 ),
                 e("main", { className: "max-w-4xl mx-auto px-4 space-y-16" },
@@ -171,7 +185,6 @@
                         e("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" },
                             MODULES.map((m, i) => 
                                 e("div", { key: i, className: "bg-slate-900 p-5 rounded-xl border border-slate-800" },
-                                    e("div", { className: "text-3xl mb-3" }, m.i),
                                     e("h3", { className: "font-bold text-lg mb-1" }, m.t),
                                     e("p", { className: "text-slate-400 text-sm" }, m.d)
                                 )
@@ -182,7 +195,7 @@
                         e(ChatBox)
                     )
                 ),
-                e("footer", { className: "text-center text-xs text-slate-600 mt-16" }, "Mini Project — AI Gym and Fitness Assistant")
+                e("footer", { className: "text-center text-xs text-slate-600 mt-16" }, "Fitness Assistant Management Panel")
             );
         }
 
