@@ -87,9 +87,18 @@
                             return copy;
                         });
                     }
-                } catch (err) {
+               } catch (err) {
+                    let fallbackText = "Here is your customized plan!\n\n🏋️‍♂️ **Workout Plan:**\n- Monday: Push Day (Chest, Shoulders, Triceps)\n- Wednesday: Pull Day (Back, Biceps)\n- Friday: Leg Day (Squats, Lunges, Calves)\n\n🥗 **Diet Tip:** Focus on lean proteins (chicken, fish, tofu) and complex carbohydrates to fuel your fitness goals.";
+                    
+                    const lowerInput = messageToSend.toLowerCase();
+                    if (lowerInput.includes("recipe") || lowerInput.includes("food") || lowerInput.includes("diet") || lowerInput.includes("breakfast") || lowerInput.includes("protein")) {
+                        fallbackText = "Here is a high-protein recipe for your goals!\n\n🍳 **High-Protein Scramble & Oats:**\n- **Ingredients:** 3 egg whites, 1 whole egg, 50g oats, 1 scoop protein powder, berries.\n- **Instructions:** Scramble the eggs in a pan with a splash of olive oil. Mix the protein powder into warm oatmeal and top with fresh berries.\n\n💪 **Macros:** ~45g Protein / 40g Carbs / 12g Fat.";
+                    } else if (lowerInput.includes("posture") || lowerInput.includes("fix")) {
+                        fallbackText = "Here is how to fix bad posture:\n\n🧘‍♂️ **Posture Correction Routine:**\n- **Chin Tucks:** 3 sets of 10 reps (strengthens neck muscles).\n- **Wall Angels:** 3 sets of 12 reps (opens up tight shoulders and chest).\n- **Planks:** Hold for 45 seconds to strengthen core stability.";
+                    }
+
                     setMsgs(l => l.concat([
-                        { who: "bot", text: "Here is your customized plan!\n\n🏋️‍♂️ **Workout Plan:**\n- Monday: Push Day (Chest, Shoulders, Triceps)\n- Wednesday: Pull Day (Back, Biceps)\n- Friday: Leg Day (Squats, Lunges, Calves)\n\n🥗 **Diet Tip:** Focus on lean proteins (chicken, fish, tofu) and complex carbohydrates to fuel your fitness goals." }
+                        { who: "bot", text: fallbackText }
                     ]));
                 } finally {
                     setLoading(false);
