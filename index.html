@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitBuddy</title>
+    <title>FitBuddy AI</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -22,9 +22,12 @@
             background: #67e8f9;
             transform: translateY(-1px);
         }
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
-<body>
+<body class="bg-slate-950 text-white">
     <div id="root"></div>
 
     <script>
@@ -33,12 +36,12 @@
         const API = "https://fitbuddy-backend-qgug.onrender.com";
 
         const MODULES = [
-            { t: "Workout Planner", d: "Builds a weekly workout plan for you." },
-            { t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
-            { t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
-            { t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
-            { t: "Pose Detection", d: "Form check using camera (demo only)." },
-            { t: "Gym Finder", d: "Suggests nearby gyms." },
+            { t: "Workout Planner", idLink: "workout", d: "Builds a weekly workout plan for you." },
+            { t: "Diet Recommender", idLink: "diet", d: "Meal plans based on your goal & body stats." },
+            { t: "Behavior Predictor", idLink: "analytics", d: "Predicts adherence and dropout risk." },
+            { t: "Chat Assistant", idLink: "chatbot", d: "24x7 fitness chatbot for quick help." },
+            { t: "Pose Detection", idLink: "poseai", d: "Form check using camera (demo only)." },
+            { t: "Gym Finder", idLink: "gyms", d: "Suggests nearby gyms." },
         ];
 
         function ChatBox() {
@@ -138,7 +141,7 @@
                     e("input", {
                         type: "text",
                         className: "flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400",
-                        placeholder: "Enter question...",
+                        placeholder: "Ask a fitness question...",
                         value: input,
                         onChange: (ae) => setInput(ae.target.value),
                         onKeyDown: (ae) => ae.key === "Enter" && send()
@@ -284,7 +287,7 @@
             if (moduleName === "Gym Finder") {
                 return e("div", { className: "bg-slate-900 border border-cyan-400 p-6 rounded-xl shadow-2xl" },
                     e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-xl font-bold text-cyan-400" }, "Regional Strength Nodes"),
+                        e("h3", { className: "text-xl font-bold text-cyan-400" }, "Gym Locator Network"),
                         e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded", onClick: onClose }, "Close")
                     ),
                     e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4" },
@@ -316,28 +319,46 @@
         function App() {
             const [selectedModule, setSelectedModule] = React.useState(null);
 
+            
+            const handleNavClick = (moduleName) => {
+                setSelectedModule(moduleName);
+            };
+
             return e("div", { className: "min-h-screen bg-slate-950 text-white font-sans pb-10" },
-                e("header", { className: "flex justify-between items-center px-6 py-4 border-b border-slate-800" },
-                    e("div", { className: "text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent" }, "FitBuddy"),
-                    e("nav", { className: "space-x-5 text-sm text-slate-300" },
-                        e("a", { href: "#mods", className: "hover:text-white" }, "Modules"),
-                        e("a", { href: "#chat", className: "hover:text-white" }, "Chat")
+               
+                e("header", { className: "sticky top-0 z-50 bg-black text-white px-6 py-4 border-b border-slate-900 shadow-md flex justify-between items-center" },
+                    e("div", { className: "text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer", onClick: () => window.scrollTo(0,0) }, "AI Gym"),
+                    e("nav", { className: "flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium tracking-wide text-slate-300" },
+                        e("a", { href: "#home", className: "hover:text-cyan-400 transition" }, "Home"),
+                        e("a", { href: "#profile", className: "hover:text-cyan-400 transition" }, "Profile"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Diet Recommender"), className: "hover:text-cyan-400 transition" }, "Diet"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Workout Planner"), className: "hover:text-cyan-400 transition" }, "Workout"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Workout Planner"), className: "hover:text-cyan-400 transition" }, "Tracker"),
+                        e("a", { href: "#chat", className: "hover:text-cyan-400 transition" }, "Chatbot"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Gym Finder"), className: "hover:text-cyan-400 transition" }, "Gyms"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Behavior Predictor"), className: "hover:text-cyan-400 transition" }, "Analytics"),
+                        e("a", { href: "#mods", onClick: () => handleNavClick("Pose Detection"), className: "hover:text-cyan-400 transition" }, "Pose AI"),
+                        e("a", { href: "#home", className: "hover:text-cyan-400 transition" }, "BMI Cal")
                     )
                 ),
-                e("section", { className: "text-center px-4 py-16" },
+                
+                
+                e("section", { id: "home", className: "text-center px-4 py-16" },
                     e("h1", { className: "text-5xl font-extrabold leading-snug mb-4" },
-                        "Personal Training and Fitness Systems"
+                        "Virtual Gym Buddy"
                     ),
                     e("p", { className: "mt-4 text-slate-400 max-w-xl mx-auto" },
-                        "Structured resource program to help organize workouts, coordinate meal planning, and track operational metrics."
+                        "Structured resource program to help organize workouts, coordinate meal planning, and track operational biometric metrics."
                     ),
                     e("div", { className: "mt-6" },
                         e("a", { href: "#chat", className: "btn bg-cyan-400 text-slate-900 hover:bg-cyan-300" }, "Open Chat Console")
                     )
                 ),
+
+                
                 e("main", { className: "max-w-4xl mx-auto px-4 space-y-12" },
                     e("div", { id: "mods" },
-                        e("h2", { className: "text-2xl font-bold mb-6 text-center" }, "Features"),
+                        e("h2", { className: "text-2xl font-bold mb-6 text-center" }, "Features Layout System"),
                         e("p", { className: "text-center text-slate-400 text-sm mb-6 -mt-4" }, "Select any system module card below to view data outputs directly."),
                         e("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" },
                             MODULES.map((m, i) => 
@@ -354,14 +375,20 @@
                         )
                     ),
 
-                    // Renders the dynamic layout complete with text data, loaders, AND live images
+                    
                     selectedModule && e(VisualModuleViewer, { 
                         moduleName: selectedModule, 
                         onClose: () => setSelectedModule(null) 
                     }),
 
+                    
                     e("div", { id: "chat", className: "pt-4" },
                         e(ChatBox)
+                    ),
+
+                    
+                    e("div", { id: "profile", className: "pt-2 border-t border-slate-900 text-center text-slate-500 text-xs" },
+                        "User Account Metrics Synchronization Token Protocol Standby"
                     )
                 ),
                 e("footer", { className: "text-center text-xs text-slate-600 mt-16" }, "Fitness Assistant Management Panel")
