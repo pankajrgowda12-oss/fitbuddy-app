@@ -30,13 +30,46 @@
 
         const API = "https://fitbuddy-backend-qgug.onrender.com";
 
+        const MODULE_DETAILS = {
+            "Workout Planner": {
+                title: "Workout Planner Terminal",
+                desc: "Strategic weekly distribution designed to balance muscular stress and systemic recovery.",
+                content: "Recommended Routine:\n- Monday: Push Variation (Chest, Shoulders, Triceps)\n- Wednesday: Pull Variation (Back, Biceps)\n- Friday: Lower Body Selection (Squats, Lunges, Calves)\n\nMetrics: Focus on progressive overload, keeping working sets between 3 to 4 per compound movement."
+            },
+            "Diet Recommender": {
+                title: "Diet Recommender System",
+                desc: "Targeted macronutrient calculation and meal structure based on energetic demands.",
+                content: "Nutritional Framework:\n- Target Profile: High Lean Protein, Complex Carbohydrates, Essential Fatty Acids.\n- Standard Option: 3 egg whites, 1 whole egg, 50g oats, mixed berries.\n\nMetrics: Maintain a stable caloric baseline adjusted to specific body weight management metrics."
+            },
+            "Behavior Predictor": {
+                title: "Behavior Predictor Matrix",
+                desc: "Statistical modeling to identify programmatic adherence trends and dropout hazards.",
+                content: "Adherence Analysis:\n- Current Status: High Risk Zone at Week 3 and Week 4.\n- Strategy: Implement structured deload sequencing or variation shifts every 21 days to counteract psychological fatigue and overtraining markers."
+            },
+            "Chat Assistant": {
+                title: "Support Console Terminal",
+                desc: "Interactive system designed for immediate verification of fitness queries and programmatic parameters.",
+                content: "System Operational Status:\n- Focus Domains: Workouts, nutrition layout, and form principles.\n- Execution: Input localized parameters into the terminal field below for structured output formatting."
+            },
+            "Pose Detection": {
+                title: "Biomechanical Motion Detection (Demo Mode)",
+                desc: "Computer vision mapping framework analyzing structural alignments during mechanical movement patterns.",
+                content: "Simulation Calibration:\n- Camera State: Idle / Demo Standby.\n- Joint Alignment Metric: Sagittal plane tracking for squat depth and spinal neutrality verification.\n\nNote: Live visual analysis requires integration with localized hardware capture nodes."
+            },
+            "Gym Finder": {
+                title: "Gym Locator Network",
+                desc: "Spatial indexing mapping nearest regional strength facilities and wellness centers.",
+                content: "Available Locations:\n- Zone Alpha Facility: 1.2 km away — Powerlifting & Compound Movement Equipment.\n- Zone Beta Training Grounds: 2.5 km away — Olympic Weightlifting Platforms.\n\nMetrics: Select a facility corresponding with your current structural layout requirements."
+            }
+        };
+
         const MODULES = [
-            { i: "", t: "Workout Planner", d: "Builds a weekly workout plan for you." },
-            { i: "", t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
-            { i: "", t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
-            { i: "", t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
-            { i: "", t: "Pose Detection", d: "Form check using camera (demo only)." },
-            { i: "", t: "Gym Finder", d: "Suggests nearby gyms." },
+            { t: "Workout Planner", d: "Builds a weekly workout plan for you." },
+            { t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
+            { t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
+            { t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
+            { t: "Pose Detection", d: "Form check using camera (demo only)." },
+            { t: "Gym Finder", d: "Suggests nearby gyms." },
         ];
 
         function ChatBox() {
@@ -160,6 +193,8 @@
         }
 
         function App() {
+            const [selectedModule, setSelectedModule] = React.useState(null);
+
             return e("div", { className: "min-h-screen bg-slate-950 text-white font-sans pb-10" },
                 e("header", { className: "flex justify-between items-center px-6 py-4 border-b border-slate-800" },
                     e("div", { className: "text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent" }, "FitBuddy"),
@@ -182,15 +217,37 @@
                 e("main", { className: "max-w-4xl mx-auto px-4 space-y-16" },
                     e("div", { id: "mods" },
                         e("h2", { className: "text-2xl font-bold mb-6 text-center" }, "Features"),
+                        e("p", { className: "text-center text-slate-400 text-sm mb-6 -mt-4" }, "Select any system module card below to view data outputs directly."),
                         e("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" },
                             MODULES.map((m, i) => 
-                                e("div", { key: i, className: "bg-slate-900 p-5 rounded-xl border border-slate-800" },
-                                    e("h3", { className: "font-bold text-lg mb-1" }, m.t),
+                                e("div", { 
+                                    key: i, 
+                                    className: "bg-slate-900 p-5 rounded-xl border cursor-pointer transition-all duration-200 " + 
+                                               (selectedModule === m.t ? "border-cyan-400 shadow-md shadow-cyan-950 scale-[1.02]" : "border-slate-800 hover:border-slate-700"),
+                                    onClick: () => setSelectedModule(m.t)
+                                    },
+                                    e("h3", { className: "font-bold text-lg mb-1 text-cyan-400" }, m.t),
                                     e("p", { className: "text-slate-400 text-sm" }, m.d)
                                 )
                             )
                         )
                     ),
+
+                    // Creative Display Segment for active module data
+                    selectedModule && e("div", { className: "bg-slate-900 border border-cyan-400/30 p-6 rounded-xl shadow-xl transition-all duration-300" },
+                        e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
+                            e("h3", { className: "text-xl font-bold text-white" }, MODULE_DETAILS[selectedModule].title),
+                            e("button", { 
+                                className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded",
+                                onClick: () => setSelectedModule(null)
+                            }, "Clear View")
+                        ),
+                        e("p", { className: "text-sm text-slate-400 italic mb-4" }, MODULE_DETAILS[selectedModule].desc),
+                        e("div", { className: "bg-slate-950 p-4 border border-slate-800 rounded-lg text-slate-200 text-sm white-space-pre-wrap leading-relaxed" },
+                            MODULE_DETAILS[selectedModule].content
+                        )
+                    ),
+
                     e("div", { id: "chat", className: "pt-8" },
                         e(ChatBox)
                     )
