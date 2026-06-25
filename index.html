@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitBuddy AI Platform</title>
-  
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <style>
         html {
-            scroll-behavior: smooth;
             background-color: #020617;
         }
         body {
@@ -30,11 +29,11 @@
             border-radius: 4px;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease forwards;
+        .page-animation {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -45,31 +44,141 @@
         const e = React.createElement;
         const API = "https://fitbuddy-backend-qgug.onrender.com";
 
-        const MODULES = [
-            { t: "Workout Planner", d: "Builds a weekly workout plan for you." },
-            { t: "Diet Recommender", d: "Meal plans based on your goal & body stats." },
-            { t: "Behavior Predictor", d: "Predicts adherence and dropout risk." },
-            { t: "Chat Assistant", d: "24x7 fitness chatbot for quick help." },
-            { t: "Pose Detection", d: "Form check using camera (demo only)." },
-            { t: "Gym Finder", d: "Suggests nearby gyms." },
-        ];
+        
+        function HomePage({ onNavigate }) {
+            const modules = [
+                { t: "Workout Planner", d: "Builds an intensive, high-performance weekly split system." },
+                { t: "Diet Recommender", d: "Precision clean eating meal structures matching physical output goals." },
+                { t: "Behavior Predictor", d: "Advanced data adherence indicators and fatigue risk forecasting." },
+                { t: "Gym Finder", d: "Maps nearby operational weight rooms and functional facilities." }
+            ];
 
-        function ChatBox() {
-            const [msgs, setMsgs] = React.useState([
-                { who: "bot", text: "Welcome to FitBuddy. Ask any question regarding your workout or diet routine below." }
-            ]);
+            return e("div", { className: "page-animation space-y-12" },
+                e("section", { className: "text-center py-12 bg-gradient-to-b from-black via-slate-950 to-slate-950 rounded-2xl border border-slate-900" },
+                    e("h1", { className: "text-5xl font-black tracking-tight mb-4 text-white" }, "Virtual Gym Buddy"),
+                    e("p", { className: "text-slate-400 max-w-xl mx-auto text-base leading-relaxed" },
+                        "Welcome back to your central hub. Switch modules from the large control options below or navigate directly through the top status bar."
+                    ),
+                    e("div", { className: "mt-6 flex justify-center gap-4" },
+                        e("button", { onClick: () => onNavigate("Chatbot"), className: "bg-cyan-400 text-slate-950 font-extrabold text-sm px-6 py-3 rounded-lg hover:bg-cyan-300 transition shadow-lg shadow-cyan-950/40 cursor-pointer" }, "Launch Chatbot Engine"),
+                        e("button", { onClick: () => onNavigate("Pose AI"), className: "bg-slate-900 border border-slate-800 text-white font-bold text-sm px-6 py-3 rounded-lg hover:bg-slate-800 transition cursor-pointer" }, "Run Video Calibration")
+                    )
+                ),
+                e("div", null,
+                    e("h2", { className: "text-2xl font-black mb-2 text-center" }, "Core Feature Suite"),
+                    e("p", { className: "text-center text-slate-500 text-sm mb-8" }, "Direct structural analytics nodes available instantly."),
+                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
+                        modules.map((m, i) => 
+                            e("div", { 
+                                key: i, 
+                                onClick: () => onNavigate(m.t),
+                                className: "bg-slate-900/40 p-6 rounded-xl border border-slate-900 hover:border-cyan-400/50 hover:bg-slate-900 transition-all duration-300 cursor-pointer group shadow-lg" 
+                            },
+                                e("h3", { className: "font-black text-lg mb-2 text-cyan-400 group-hover:text-cyan-300" }, m.t),
+                                e("p", { className: "text-slate-400 text-sm leading-relaxed" }, m.d)
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        function ProfilePage() {
+            return e("div", { className: "page-animation max-w-2xl mx-auto bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl" },
+                e("div", { className: "flex items-center gap-6 border-b border-slate-800 pb-6 mb-6" },
+                    e("div", { className: "w-20 h-20 bg-gradient-to-tr from-cyan-600 to-blue-500 rounded-full flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-cyan-950/50" }, "PK"),
+                    e("div", null,
+                        e("h2", { className: "text-2xl font-black text-white" }, "Pankaj R Gowda"),
+                        e("p", { className: "text-cyan-400 font-mono text-xs uppercase tracking-wider" }, "Premium Core Tier Account")
+                    )
+                ),
+                e("div", { className: "space-y-4" },
+                    e("h3", { className: "text-sm font-bold text-slate-400 uppercase tracking-widest" }, "Physical Parameters"),
+                    e("div", { className: "grid grid-cols-2 gap-4" },
+                        e("div", { className: "bg-slate-950 p-4 rounded-xl border border-slate-900" }, e("div", { className: "text-xs text-slate-500" }, "Height Metric"), e("div", { className: "text-lg font-bold font-mono" }, "178 cm")),
+                        e("div", { className: "bg-slate-950 p-4 rounded-xl border border-slate-900" }, e("div", { className: "text-xs text-slate-500" }, "Current Scale Mass"), e("div", { className: "text-lg font-bold font-mono" }, "76 kg"))
+                    ),
+                    e("div", { className: "bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3" },
+                        e("div", { className: "flex justify-between text-sm" }, e("span", { className: "text-slate-400" }, "Systemic Goal Blueprint:"), e("span", { className: "text-cyan-400 font-bold" }, "Lean Muscle Hypertrophy")),
+                        e("div", { className: "flex justify-between text-sm" }, e("span", { className: "text-slate-400" }, "Weekly Routine Framework:"), e("span", null, "3-Day Compound Split")),
+                        e("div", { className: "flex justify-between text-sm" }, e("span", { className: "text-slate-400" }, "Database Node Token:"), e("span", { className: "font-mono text-xs text-slate-500" }, "usr_942x_active"))
+                    )
+                )
+            );
+        }
+
+        function TrackerPage() {
+            const [water, setWater] = React.useState(2.4);
+            const [workouts, setWorkouts] = React.useState(["15,000kg Heavy Squat Session", "45-Min Zone 2 Cardio Frame"]);
+
+            return e("div", { className: "page-animation max-w-3xl mx-auto space-y-6" },
+                e("div", { className: "bg-slate-900/60 border border-slate-800 rounded-2xl p-6" },
+                    e("h2", { className: "text-2xl font-black text-white mb-2" }, "Biometric Performance Tracker"),
+                    e("p", { className: "text-xs text-slate-500" }, "Manual verification and live log monitoring.")
+                ),
+                e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
+                    e("div", { className: "bg-slate-900/40 border border-slate-800 p-6 rounded-xl space-y-4" },
+                        e("h3", { className: "text-base font-bold text-cyan-400" }, "Hydration Tracking Counter"),
+                        e("div", { className: "text-4xl font-black font-mono" }, water.toFixed(1), " / 4.0 L"),
+                        e("div", { className: "w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800" },
+                            e("div", { className: "bg-cyan-400 h-full transition-all duration-300", style: { width: `${(water / 4) * 100}%` } })
+                        ),
+                        e("button", { onClick: () => setWater(w => Math.min(w + 0.2, 4)), className: "w-full bg-slate-800 text-xs font-bold py-2 rounded-lg border border-slate-700 hover:bg-slate-700 transition" }, "+ Add 200ml Intake Fluid")
+                    ),
+                    e("div", { className: "bg-slate-900/40 border border-slate-800 p-6 rounded-xl space-y-4" },
+                        e("h3", { className: "text-base font-bold text-emerald-400" }, "Completed Activity Journal"),
+                        e("div", { className: "space-y-2" },
+                            workouts.map((w, idx) => e("div", { key: idx, className: "bg-slate-950 p-2.5 rounded border border-slate-900 text-xs font-medium" }, "✓ ", w))
+                        )
+                    )
+                )
+            );
+        }
+
+        function BmiPage() {
+            const [w, setW] = React.useState(76);
+            const [h, setH] = React.useState(178);
+            
+            const bmi = (w / ((h / 100) * (h / 100))).toFixed(1);
+            let status = "Normal Weight";
+            let color = "text-emerald-400";
+            if (bmi >= 25) { status = "Overweight Threshold"; color = "text-amber-400"; }
+            if (bmi < 18.5) { status = "Underweight Threshold"; color = "text-sky-400"; }
+
+            return e("div", { className: "page-animation max-w-xl mx-auto bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-6" },
+                e("div", null,
+                    e("h2", { className: "text-xl font-black" }, "Interactive Body Mass Index Calculator"),
+                    e("p", { className: "text-xs text-slate-500" }, "Adjust variables to analyze composition ratios.")
+                ),
+                e("div", { className: "space-y-4" },
+                    e("div", null,
+                        e("div", { className: "flex justify-between text-xs mb-1" }, e("span", { className: "text-slate-400" }, "Weight mass parameter:"), e("span", { className: "font-mono font-bold" }, w, " kg")),
+                        e("input", { type: "range", min: "40", max: "150", value: w, onChange: e => setW(Number(e.target.value)), className: "w-full accent-cyan-400" })
+                    ),
+                    e("div", null,
+                        e("div", { className: "flex justify-between text-xs mb-1" }, e("span", { className: "text-slate-400" }, "Height stature metric:"), e("span", { className: "font-mono font-bold" }, h, " cm")),
+                        e("input", { type: "range", min: "120", max: "220", value: h, onChange: e => setH(Number(e.target.value)), className: "w-full accent-cyan-400" })
+                    )
+                ),
+                e("div", { className: "bg-slate-950 p-4 rounded-xl border border-slate-900 text-center" },
+                    e("div", { className: "text-xs text-slate-500 font-medium" }, "Calculated Scale Metric Value"),
+                    e("div", { className: `text-4xl font-black font-mono my-1 ${color}` }, bmi),
+                    e("div", { className: `text-xs font-bold uppercase tracking-wider ${color}` }, status)
+                )
+            );
+        }
+
+        function ChatbotPage() {
+            const [msgs, setMsgs] = React.useState([{ who: "bot", text: "Welcome to FitBuddy. Ask any question regarding your workout or diet routine below." }]);
             const [input, setInput] = React.useState("");
             const [loading, setLoading] = React.useState(false);
             const endRef = React.useRef(null);
 
-            React.useEffect(() => {
-                endRef.current?.scrollIntoView({ behavior: "smooth" });
-            }, [msgs]);
+            React.useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
 
             async function send(txt) {
                 const messageToSend = txt || input;
                 if (!messageToSend.trim() || loading) return;
-
                 if (!txt) setInput("");
                 setLoading(true);
                 setMsgs(l => l.concat([{ who: "user", text: messageToSend }]));
@@ -80,15 +189,11 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ message: messageToSend })
                     });
-
-                    if (!response.ok) throw new Error("API Limit");
-
+                    if (!response.ok) throw new Error();
                     const reader = response.body.getReader();
                     const dec = new TextDecoder();
                     let acc = "";
-
                     setMsgs(l => l.concat([{ who: "bot", text: "..." }]));
-
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) break;
@@ -99,29 +204,133 @@
                             return copy;
                         });
                     }
-                } catch (err) {
-                    const lowerInput = messageToSend.toLowerCase();
-                    let fallbackText = "";
-                    const fitnessKeywords = ["workout", "plan", "diet", "recipe", "food", "protein", "gym", "exercise", "posture", "fix", "body", "muscle", "calories"];
-                    const isFitnessRelated = fitnessKeywords.some(k => lowerInput.includes(k));
+                } catch {
+                    setMsgs(l => l.concat([{ who: "bot", text: "Standard Core Training Module Response Active: Ensure protein intake fields approach the daily floor optimization metric targets (~1.8g/kg)." }]));
+                } finally { setLoading(false); }
+            }
 
-                    if (isFitnessRelated) {
-                        if (lowerInput.includes("recipe") || lowerInput.includes("food") || lowerInput.includes("diet") || lowerInput.includes("protein")) {
-                            fallbackText = "High-Protein Balance Matrix:\n\n- Egg White Scramble with Whole Wheat Toast\n- 150g Grilled Chicken Breast paired with Basmati Rice\n- Whey Isolate Shake blended with 40g Oats\n\nTarget Macros: 45g Protein / 40g Carbs / 12g Fat.";
-                        } else if (lowerInput.includes("posture") || lowerInput.includes("fix")) {
-                            fallbackText = "Biomechanical Posture Routine:\n\n- Chin Tucks (3 sets x 10 reps)\n- Wall Angels (3 sets x 12 reps) to stretch tight pectoral zones\n- High Planks (45 second hold) for core spine structural alignment.";
-                        } else {
-                            fallbackText = "Standard Training Routine:\n- Monday: Chest/Shoulders/Triceps\n- Wednesday: Back/Biceps\n- Friday: Legs/Abs\n\nEnsure daily protein floor matches ~1.6g per kilogram of total body mass.";
+            return e("div", { className: "page-animation max-w-3xl mx-auto" }, e(ChatBox, { msgs, input, setInput, loading, send, endRef }));
+        }
+
+        function PoseAiPage() {
+            const videoRef = React.useRef(null);
+            const [streamActive, setStreamActive] = React.useState(false);
+            const [err, setErr] = React.useState(null);
+
+            React.useEffect(() => {
+                async function setupCamera() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            video: { width: 640, height: 480, facingMode: "user" },
+                            audio: false
+                        });
+                        if (videoRef.current) {
+                            videoRef.current.srcObject = stream;
+                            setStreamActive(true);
                         }
-                    } else {
-                        fallbackText = "This system is dedicated exclusively to training metrics, nutrition guides, and biomechanical analytics. Please rephrase your query.";
+                    } catch (e) {
+                        setErr("Camera hardware device could not be acquired. Ensure system permissions are granted inside settings.");
                     }
-                    setMsgs(l => l.concat([{ who: "bot", text: fallbackText }]));
-                } finally {
-                    setLoading(false);
+                }
+                setupCamera();
+                return () => {
+                    if (videoRef.current && videoRef.current.srcObject) {
+                        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+                    }
+                };
+            }, []);
+
+            return e("div", { className: "page-animation max-w-2xl mx-auto bg-slate-900 border border-cyan-500/30 p-6 rounded-xl shadow-2xl space-y-4" },
+                e("div", { className: "border-b border-slate-800 pb-3" },
+                    e("h3", { className: "text-lg font-bold text-cyan-400 flex items-center gap-2" }, 
+                        e("span", { className: "w-2 h-2 rounded-full bg-cyan-400" + (streamActive ? " animate-ping" : "") }), 
+                        "Biomechanical Pose Alignment tracking"
+                    ),
+                    e("p", { className: "text-xs text-slate-500 mt-0.5" }, "Direct MediaDevices WebRTC stream alignment interface node.")
+                ),
+                e("div", { className: "relative aspect-video rounded-lg overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center" },
+                    err && e("div", { className: "p-4 text-center max-w-sm text-xs text-red-400 font-medium" }, err),
+                    !streamActive && !err && e("div", { className: "flex flex-col items-center gap-2" },
+                        e("div", { className: "w-6 h-6 border-2 border-t-cyan-400 border-slate-800 rounded-full animate-spin" }),
+                        e("div", { className: "text-xs text-slate-500" }, "Mounting native video capture arrays...")
+                    ),
+                    e("video", {
+                        ref: videoRef,
+                        autoPlay: true,
+                        playsInline: true,
+                        muted: true,
+                        className: `w-full h-full object-cover scale-x-[-1] ${streamActive ? "block" : "hidden"}`
+                    }),
+                    streamActive && e("div", { className: "absolute bottom-3 left-3 bg-black/70 px-2 py-1 border border-slate-800 rounded text-[10px] font-mono tracking-widest text-emerald-400" }, "● DEVICE CAPTURE LIVE")
+                )
+            );
+        }
+
+        
+        function StaticModulePage({ title, type }) {
+            return e("div", { className: "page-animation max-w-3xl mx-auto bg-slate-900/60 border border-slate-800 rounded-2xl p-6" },
+                e("h2", { className: "text-xl font-black text-cyan-400 border-b border-slate-800 pb-3 mb-4" }, title),
+                e("p", { className: "text-sm text-slate-400 leading-relaxed" }, 
+                    `This dedicated console section tracks metrics for ${title}. Interface logs and parameters are running within localized sandboxed frames safely.`
+                )
+            );
+        }
+
+        
+        function App() {
+            const [currentPage, setCurrentPage] = React.useState("Home");
+
+            function renderPageContent() {
+                switch(currentPage) {
+                    case "Home": return e(HomePage, { onNavigate: setCurrentPage });
+                    case "Profile": return e(ProfilePage);
+                    case "Tracker": return e(TrackerPage);
+                    case "Chatbot": return e(ChatbotPage);
+                    case "BMI Cal": return e(BmiPage);
+                    case "Pose AI": return e(PoseAiPage);
+                    default: return e(StaticModulePage, { title: currentPage });
                 }
             }
 
+            return e("div", { className: "min-h-screen bg-slate-950 text-white font-sans pb-16" },
+                
+                e("header", { className: "sticky top-0 z-50 bg-black text-white px-8 py-6 border-b border-slate-900 shadow-xl flex justify-between items-center" },
+                    e("div", { onClick: () => setCurrentPage("Home"), className: "text-2xl font-black tracking-tight text-white cursor-pointer hover:text-cyan-400 transition" }, "AI Gym"),
+                    e("nav", { className: "flex flex-wrap gap-x-8 gap-y-2 text-base md:text-lg font-bold text-slate-200" },
+                        [
+                            { id: "Home", label: "Home" },
+                            { id: "Profile", label: "Profile" },
+                            { id: "Diet Recommender", label: "Diet" },
+                            { id: "Workout Planner", label: "Workout" },
+                            { id: "Tracker", label: "Tracker" },
+                            { id: "Chatbot", label: "Chatbot" },
+                            { id: "Gym Finder", label: "Gyms" },
+                            { id: "Behavior Predictor", label: "Analytics" },
+                            { id: "Pose AI", label: "Pose AI" },
+                            { id: "BMI Cal", label: "BMI Cal" }
+                        ].map(navItem => 
+                            e("button", {
+                                key: navItem.id,
+                                onClick: () => setCurrentPage(navItem.id),
+                                className: "hover:text-cyan-400 transition cursor-pointer relative pb-1 " + (currentPage === navItem.id ? "text-cyan-400 font-black" : "")
+                            }, 
+                                navItem.label,
+                                currentPage === navItem.id && e("div", { className: "absolute bottom-0 left-0 right-0 h-0.5 bg-cyan-400" })
+                            )
+                        )
+                    )
+                ),
+                
+                
+                e("main", { className: "max-w-4xl mx-auto px-4 mt-12" },
+                    renderPageContent()
+                ),
+                e("footer", { className: "text-center text-xs text-slate-700 mt-20 font-medium" }, "Fitness Assistant Management Panel")
+            );
+        }
+
+        
+        function ChatBox({ msgs, input, setInput, loading, send, endRef }) {
             return e("div", { className: "w-full bg-slate-900/60 border border-slate-800 text-white rounded-xl shadow-2xl p-5" },
                 e("h2", { className: "text-2xl font-bold text-center mb-1 text-white" }, "FitBuddy Support Chat"),
                 e("p", { className: "text-center text-slate-500 text-xs mb-4" }, "Application Chatbot Console Interface"),
@@ -138,299 +347,27 @@
                 e("div", { className: "flex gap-2 mb-4" },
                     e("input", {
                         type: "text",
-                        className: "flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400",
+                        className: "flex-1 bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400",
                         placeholder: "Ask a fitness question...",
                         value: input,
                         onChange: (ae) => setInput(ae.target.value),
                         onKeyDown: (ae) => ae.key === "Enter" && send()
                     }),
                     e("button", {
-                        className: "bg-cyan-400 text-slate-950 font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-cyan-300 transition duration-200 disabled:opacity-50 shadow-md shadow-cyan-950/30",
+                        className: "bg-cyan-400 text-slate-950 font-bold text-sm px-5 py-2.5 rounded-lg hover:bg-cyan-300 transition duration-200 disabled:opacity-50 cursor-pointer shadow-md shadow-cyan-950/30",
                         onClick: () => send(),
                         disabled: loading
                     }, "Send")
+                ),
+                e("div", { className: "flex flex-wrap gap-2 justify-center" },
+                    ["Beginner workout plan", "High protein breakfast", "How to fix bad posture"].map((str, idx) => 
+                        e("button", {
+                            key: idx,
+                            className: "bg-slate-800/50 text-xs text-slate-400 px-3 py-1.5 rounded-full hover:bg-slate-700 hover:text-white border border-slate-700/30 transition cursor-pointer",
+                            onClick: () => send(str)
+                        }, str)
+                    )
                 )
-            );
-        }
-
-        function NavigationContentBlock({ viewType, onClose }) {
-            if (!viewType) return null;
-
-            let title = "";
-            let accentColor = "border-cyan-500/30 text-cyan-400";
-            let content = null;
-
-            if (viewType === "Profile") {
-                title = "Customer Profile Management";
-                content = e("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6 text-sm" },
-                    e("div", { className: "bg-slate-950 p-4 rounded-lg border border-slate-800/80 text-center" },
-                        e("div", { className: "w-16 h-16 bg-cyan-950 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold text-cyan-400" }, "PK"),
-                        e("div", { className: "font-bold text-base" }, "Pankaj R Gowda"),
-                        e("div", { className: "text-xs text-slate-500" }, "Premium Member tier")
-                    ),
-                    e("div", { className: "bg-slate-950 p-4 rounded-lg border border-slate-800/80 md:col-span-2 space-y-2" },
-                        e("div", { className: "flex justify-between border-b border-slate-900 pb-1" }, e("span", { className: "text-slate-400" }, "Height / Weight:"), e("span", { className: "font-mono" }, "178 cm / 76 kg")),
-                        e("div", { className: "flex justify-between border-b border-slate-900 pb-1" }, e("span", { className: "text-slate-400" }, "Fitness Goal:"), e("span", { className: "text-cyan-400 font-bold" }, "Lean Mass Recomposition")),
-                        e("div", { className: "flex justify-between" }, e("span", { className: "text-slate-400" }, "Active Program:"), e("span", null, "Hypertrophy Push/Pull/Legs"))
-                    )
-                );
-            } else if (viewType === "Tracker") {
-                title = "Biometric Activity Tracker";
-                content = e("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4" },
-                    [
-                        { label: "Daily Volume Metric", value: "14,250 kg", desc: "Accumulated weight lifted today" },
-                        { label: "Caloric Output", value: "680 kcal", desc: "Active cardiovascular burn rate" },
-                        { label: "Hydration Intake", value: "2.8 / 4.0 L", desc: "Optimal performance floor metric" }
-                    ].map((item, i) => 
-                        e("div", { key: i, className: "bg-slate-950 p-4 rounded-lg border border-slate-800/80" },
-                            e("div", { className: "text-xs text-slate-400 font-medium" }, item.label),
-                            e("div", { className: "text-xl font-black text-white my-1" }, item.value),
-                            e("div", { className: "text-[11px] text-slate-500" }, item.desc)
-                        )
-                    )
-                );
-            } else if (viewType === "BMI Cal") {
-                title = "Advanced BMI Metabolic Calculator";
-                content = e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6 items-center" },
-                    e("div", { className: "bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3" },
-                        e("div", { className: "text-sm font-bold" }, "Live Metrics Analysis"),
-                        e("div", { className: "flex items-center justify-between text-xs" }, e("span", null, "Your Measured Body Mass Index:"), e("span", { className: "font-mono font-bold text-emerald-400 text-sm" }, "24.0 (Normal Range)"))
-                    ),
-                    e("div", { className: "text-center p-4 bg-emerald-950/20 border border-emerald-900/30 rounded-lg" },
-                        e("div", { className: "text-xs font-bold text-emerald-400" }, "STATUS: HEALTHY WEIGHT PROJECTION"),
-                        e("p", { className: "text-[11px] text-slate-400 mt-1" }, "Your metrics indicate excellent structural composition thresholds for high-output hypertrophic training models.")
-                    )
-                );
-            } else {
-                return null;
-            }
-
-            return e("div", { className: `bg-slate-900 border ${accentColor} p-6 rounded-xl shadow-2xl animate-fade-in mb-8` },
-                e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                    e("h3", { className: "text-xl font-bold" }, title),
-                    e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close Window")
-                ),
-                content
-            );
-        }
-
-        function VisualModuleViewer({ moduleName, onClose }) {
-            if (!moduleName) return null;
-
-            if (moduleName === "Workout Planner") {
-                return e("div", { className: "bg-slate-900 border border-cyan-500/30 p-6 rounded-xl shadow-2xl animate-fade-in" },
-                    e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-lg font-bold text-cyan-400 flex items-center gap-2" }, 
-                            e("span", { className: "w-2 h-2 rounded-full bg-cyan-400 animate-ping" }), "Workout Split Matrix"
-                        ),
-                        e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close")
-                    ),
-                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
-                        e("div", { className: "space-y-3" },
-                            [
-                                { day: "Monday: Push Day", target: "Chest, Shoulders, Triceps Intensity" },
-                                { day: "Wednesday: Pull Day", target: "Back, Biceps Volume Core" },
-                                { day: "Friday: Leg Day", target: "Quads, Hamstrings Posterior Chain" }
-                            ].map((w, idx) => 
-                                e("div", { key: idx, className: "bg-slate-950 p-3 rounded-lg border border-slate-800/80" },
-                                    e("div", { className: "font-semibold text-xs text-slate-400" }, w.day),
-                                    e("div", { className: "text-sm font-bold text-white mt-0.5" }, w.target)
-                                )
-                            )
-                        ),
-                        e("div", { className: "rounded-xl overflow-hidden border border-slate-800 h-40 shadow-inner" },
-                            e("img", { src: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80", alt: "Gym routine split", className: "w-full h-full object-cover brightness-75" })
-                        )
-                    )
-                );
-            }
-
-            if (moduleName === "Diet Recommender") {
-                return e("div", { className: "bg-slate-900 border border-cyan-500/30 p-6 rounded-xl shadow-2xl animate-fade-in" },
-                    e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-lg font-bold text-cyan-400" }, "Nutritional Macro Balance Matrix"),
-                        e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close")
-                    ),
-                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
-                        e("div", { className: "rounded-xl overflow-hidden border border-slate-800 h-40" },
-                            e("img", { src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80", alt: "Healthy Meal Calculation", className: "w-full h-full object-cover brightness-75" })
-                        ),
-                        e("div", { className: "bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3.5" },
-                            [
-                                { label: "Protein Metric", val: "w-[45%] bg-cyan-400", amount: "45g" },
-                                { label: "Carbohydrates Metric", val: "w-[40%] bg-blue-400", amount: "40g" },
-                                { label: "Fats Floor", val: "w-[12%] bg-emerald-400", amount: "12g" }
-                            ].map((m, i) => 
-                                e("div", { key: i },
-                                    e("div", { className: "flex justify-between text-xs mb-1" },
-                                        e("span", { className: "text-slate-400 font-medium" }, m.label),
-                                        e("span", { className: "text-white font-mono font-bold" }, m.amount)
-                                    ),
-                                    e("div", { className: "w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800" }, 
-                                        e("div", { className: `h-full rounded-full ${m.val}` })
-                                    )
-                                )
-                            )
-                        )
-                    )
-                );
-            }
-
-            if (moduleName === "Behavior Predictor") {
-                return e("div", { className: "bg-slate-900 border border-red-500/30 p-6 rounded-xl shadow-2xl animate-fade-in" },
-                    e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-lg font-bold text-red-400 flex items-center gap-2" }, 
-                            e("span", { className: "w-2 h-2 rounded-full bg-red-500 animate-pulse" }), "Adherence & Compliance Predictor"
-                        ),
-                        e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close")
-                    ),
-                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
-                        e("div", { className: "bg-slate-950 p-4 rounded-lg border border-slate-800/80 flex flex-col justify-center" },
-                            e("div", { className: "text-xs font-bold text-red-400 tracking-wider uppercase mb-1" }, "DROPOUT RISK: CRITICAL"),
-                            e("p", { className: "text-xs text-slate-400 leading-relaxed mb-3" }, "System models flag a massive adherence drop-off probability during Week 3 and Week 4 due to systemic nervous fatigue accumulation."),
-                            e("div", { className: "w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-800" }, 
-                                e("div", { className: "h-full bg-gradient-to-r from-orange-500 to-red-500 w-4/5 animate-pulse" })
-                            )
-                        ),
-                        e("div", { className: "rounded-xl overflow-hidden border border-slate-800 h-36" },
-                            e("img", { src: "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80", alt: "Compliance Analytics Grid", className: "w-full h-full object-cover opacity-40 filter grayscale animate-pulse" })
-                        )
-                    )
-                );
-            }
-
-            if (moduleName === "Pose Detection") {
-                return e("div", { className: "bg-slate-900 border border-cyan-500/30 p-6 rounded-xl shadow-2xl animate-fade-in" },
-                    e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-lg font-bold text-cyan-400" }, "Biomechanical Angle Tracking"),
-                        e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close")
-                    ),
-                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
-                        e("div", { className: "rounded-xl overflow-hidden border border-slate-800 h-40 shadow-lg" },
-                            e("img", { src: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=500&q=80", alt: "Biomechanical Movement Calibration Frame", className: "w-full h-full object-cover brightness-90" })
-                        ),
-                        e("div", { className: "bg-slate-950 border border-slate-800/80 rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-inner" },
-                            e("div", { className: "w-7 h-7 rounded-full border-2 border-t-cyan-400 border-slate-800 animate-spin mb-3" }),
-                            e("div", { className: "text-xs font-bold text-slate-200 mb-1" }, "Calibration Framework Standby"),
-                            e("p", { className: "text-[11px] text-slate-500 max-w-xs leading-normal" }, "Targeting joint tracking parameters across the sagittal movement alignment fields.")
-                        )
-                    )
-                );
-            }
-
-            if (moduleName === "Gym Finder") {
-                return e("div", { className: "bg-slate-900 border border-cyan-500/30 p-6 rounded-xl shadow-2xl animate-fade-in" },
-                    e("div", { className: "flex justify-between items-center border-b border-slate-800 pb-3 mb-4" },
-                        e("h3", { className: "text-lg font-bold text-cyan-400" }, "Gym Locator Network"),
-                        e("button", { className: "text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded border border-slate-700/50", onClick: onClose }, "Close")
-                    ),
-                    e("p", { className: "text-xs text-slate-400 font-medium mb-3 italic" }, "Spatial indexing mapping nearest regional strength facilities and wellness centers."),
-                    e("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4" },
-                        [
-                            { name: "Zone Alpha Facility", dist: "1.2 km away", spec: "Powerlifting & Compound Movement Equipment" },
-                            { name: "Zone Beta Training Grounds", dist: "2.5 km away", spec: "Olympic Weightlifting Platforms & Metrics" }
-                        ].map((g, i) => 
-                            e("div", { key: i, className: "bg-slate-950 p-3.5 rounded-lg border border-slate-800 flex justify-between items-start gap-4 hover:border-slate-700 transition" },
-                                e("div", null,
-                                    e("div", { className: "font-bold text-xs text-slate-200" }, g.name),
-                                    e("p", { className: "text-[11px] text-slate-500 mt-0.5 leading-snug" }, g.spec)
-                                ),
-                                e("div", { className: "text-[10px] text-cyan-400 font-mono font-bold bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-900/30 shrink-0" }, g.dist)
-                            )
-                        )
-                    )
-                );
-            }
-
-            return null;
-        }
-
-        function App() {
-            const [selectedModule, setSelectedModule] = React.useState(null);
-            const [activeNavBlock, setActiveNavBlock] = React.useState(null);
-
-            const handleNavClick = (view, isModule = false) => {
-                if (isModule) {
-                    setActiveNavBlock(null);
-                    setSelectedModule(view);
-                    document.getElementById("mods")?.scrollIntoView({ behavior: "smooth" });
-                } else {
-                    setSelectedModule(null);
-                    setActiveNavBlock(view);
-                    document.getElementById("interactive-window")?.scrollIntoView({ behavior: "smooth" });
-                }
-            };
-
-            return e("div", { className: "min-h-screen bg-slate-950 text-white font-sans pb-16" },
-                
-                e("header", { className: "sticky top-0 z-50 bg-black text-white px-8 py-5 border-b border-slate-900 shadow-xl flex justify-between items-center" },
-                    e("div", { className: "text-2xl font-black tracking-tight text-white cursor-pointer hover:text-cyan-400 transition" }, "AI Gym"),
-                    e("nav", { className: "flex flex-wrap gap-x-8 gap-y-2 text-base md:text-lg font-bold tracking-normal text-slate-200" },
-                        e("button", { onClick: () => { setSelectedModule(null); setActiveNavBlock(null); window.scrollTo({top:0, behavior:'smooth'}); }, className: "hover:text-cyan-400 transition cursor-pointer" }, "Home"),
-                        e("button", { onClick: () => handleNavClick("Profile"), className: "hover:text-cyan-400 transition cursor-pointer " + (activeNavBlock === "Profile" ? "text-cyan-400 border-b-2 border-cyan-400" : "") }, "Profile"),
-                        e("button", { onClick: () => handleNavClick("Diet Recommender", true), className: "hover:text-cyan-400 transition cursor-pointer" }, "Diet"),
-                        e("button", { onClick: () => handleNavClick("Workout Planner", true), className: "hover:text-cyan-400 transition cursor-pointer" }, "Workout"),
-                        e("button", { onClick: () => handleNavClick("Tracker"), className: "hover:text-cyan-400 transition cursor-pointer " + (activeNavBlock === "Tracker" ? "text-cyan-400 border-b-2 border-cyan-400" : "") }, "Tracker"),
-                        e("button", { onClick: () => { handleNavClick(null); document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" }); }, className: "hover:text-cyan-400 transition cursor-pointer" }, "Chatbot"),
-                        e("button", { onClick: () => handleNavClick("Gym Finder", true), className: "hover:text-cyan-400 transition cursor-pointer" }, "Gyms"),
-                        e("button", { onClick: () => handleNavClick("Behavior Predictor", true), className: "hover:text-cyan-400 transition cursor-pointer" }, "Analytics"),
-                        e("button", { onClick: () => handleNavClick("Pose Detection", true), className: "hover:text-cyan-400 transition cursor-pointer" }, "Pose AI"),
-                        e("button", { onClick: () => handleNavClick("BMI Cal"), className: "hover:text-cyan-400 transition cursor-pointer " + (activeNavBlock === "BMI Cal" ? "text-cyan-400 border-b-2 border-cyan-400" : "") }, "BMI Cal")
-                    )
-                ),
-                
-               
-                e("section", { id: "home", className: "text-center px-4 py-16 bg-gradient-to-b from-black via-slate-950 to-slate-950" },
-                    e("h1", { className: "text-4xl md:text-5xl font-extrabold tracking-tight mb-3 text-white" }, "Virtual Gym Buddy"),
-                    e("p", { className: "text-slate-400 max-w-xl mx-auto text-sm md:text-base leading-relaxed" },
-                        "Structured resource program to help organize workouts, coordinate meal planning, and track operational biometric metrics."
-                    ),
-                    e("div", { className: "mt-6" },
-                        e("button", { onClick: () => document.getElementById("chat")?.scrollIntoView({ behavior: "smooth" }), className: "inline-block bg-cyan-400 text-slate-950 font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-cyan-300 transition shadow-lg shadow-cyan-950/40 cursor-pointer" }, "Open Chat Console")
-                    )
-                ),
-
-                
-                e("main", { className: "max-w-4xl mx-auto px-4 space-y-10" },
-                    
-                    
-                    e("div", { id: "interactive-window" }, 
-                        e(NavigationContentBlock, { viewType: activeNavBlock, onClose: () => setActiveNavBlock(null) })
-                    ),
-
-                   
-                    e("div", { id: "mods" },
-                        e("h2", { className: "text-xl font-bold mb-1 text-center" }, "Features Layout System"),
-                        e("p", { className: "text-center text-slate-500 text-xs mb-6" }, "Select any system module card below to view data outputs directly."),
-                        e("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" },
-                            MODULES.map((m, i) => 
-                                e("div", { 
-                                    key: i, 
-                                    className: "bg-slate-900/40 p-5 rounded-xl border transition-all duration-300 cursor-pointer " + 
-                                               (selectedModule === m.t ? "border-cyan-400 bg-slate-900 shadow-xl shadow-cyan-950/20 scale-[1.02]" : "border-slate-900 hover:border-slate-800 hover:bg-slate-900/20"),
-                                    onClick: () => { setActiveNavBlock(null); setSelectedModule(m.t); }
-                                    },
-                                    e("h3", { className: "font-bold text-base mb-1 text-cyan-400" }, m.t),
-                                    e("p", { className: "text-slate-400 text-xs leading-normal" }, m.d)
-                                )
-                            )
-                        )
-                    ),
-
-                   
-                    selectedModule && e("div", { className: "pt-2" }, 
-                        e(VisualModuleViewer, { 
-                            moduleName: selectedModule, 
-                            onClose: () => setSelectedModule(null) 
-                        })
-                    ),
-
-                   
-                    e("div", { id: "chat", className: "pt-4" },
-                        e(ChatBox)
-                    )
-                ),
-                e("footer", { className: "text-center text-xs text-slate-700 mt-20 font-medium" }, "Fitness Assistant Management Panel")
             );
         }
 
